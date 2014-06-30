@@ -2,22 +2,15 @@ FROM ndelitski/nodejs
 MAINTAINER Nick Delitski
 
 # Let the conatiner know that there is no tty
-ENV DEBIAN_FRONTEND noninteractive
+ENV 	DEBIAN_FRONTEND noninteractive
 
-# Install
-RUN apt-get install -y nginx supervisor
+# Install NGINX
+RUN 	apt-get install -y nginx
 
 # Nginx config
-ADD ./nginx.conf /etc/nginx/
-#RUN sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf
-#RUN sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size 100m/" /etc/nginx/nginx.conf
-#RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+ADD 	./nginx.conf /etc/nginx/
+RUN 	mkdir /etc/service/nginx
+ADD 	./nginx.sh /etc/service/nginx/run
+RUN 	chmod +x /etc/service/nginx/run
 
-# Supervisor
-ADD ./supervisord.conf /etc/supervisor/
-
-VOLUME ["/var/log"]
-
-ENTRYPOINT ["/usr/bin/supervisord", "--nodaemon"]
-
-EXPOSE 80
+EXPOSE 	80
